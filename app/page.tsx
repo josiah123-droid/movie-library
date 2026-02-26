@@ -1,65 +1,82 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { Star } from "lucide-react";
+
+type Movie = {
+  id: number;
+  title: string;
+  year: number;
+  genre: string;
+  rating: number;
+  cover: string;
+};
+
+const moviesData: Movie[] = [
+  { id: 1, title: "Inception", year: 2010, genre: "Sci-Fi", rating: 5, cover: "https://picsum.photos/200/300?1" },
+  { id: 2, title: "Avatar", year: 2009, genre: "Adventure", rating: 4, cover: "https://picsum.photos/200/300?2" },
+  { id: 3, title: "The Dark Knight", year: 2008, genre: "Action", rating: 5, cover: "https://picsum.photos/200/300?3" },
+  { id: 4, title: "Parasite", year: 2019, genre: "Thriller", rating: 4, cover: "https://picsum.photos/200/300?4" },
+  { id: 5, title: "Avengers: Endgame", year: 2019, genre: "Superhero", rating: 4, cover: "https://picsum.photos/200/300?5" },
+];
+
+export default function MovieLibraryPage() {
+  const [search, setSearch] = useState<string>("");
+
+  const filteredMovies = moviesData.filter((movie) =>
+    movie.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="p-6 bg-neutral-950 min-h-screen text-white">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+        <h1 className="text-3xl font-bold">🎬 Movie Library</h1>
+
+        <div className="flex gap-2 w-full md:w-96">
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 p-2 rounded-md border border-neutral-800 bg-neutral-900"
+          />
+
+          <button className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition">
+            + Add Movie
+          </button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </div>
+
+      {/* Movie Grid */}
+      <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        {filteredMovies.map((movie) => (
+          <article
+            key={movie.id}
+            className="flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <img
+              src={movie.cover}
+              alt={movie.title}
+              className="h-64 w-full object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+            <div className="p-4 flex flex-col gap-1">
+              <h2 className="font-semibold">{movie.title}</h2>
+
+              <p className="text-sm text-neutral-400">
+                {movie.year} • {movie.genre}
+              </p>
+
+              <div className="flex gap-1">
+                {Array.from({ length: movie.rating }).map((_, i) => (
+                  <Star key={i} className="w-4 h-4 text-yellow-400" />
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
+    </main>
   );
 }
