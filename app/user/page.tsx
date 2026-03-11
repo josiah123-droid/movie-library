@@ -123,23 +123,29 @@ function SortableMovieCard({
         <StarRating rating={movie.rating} />
 
         <div className="flex gap-2 mt-2">
-          <button
-            onPointerDown={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation();
+          {movie.featured ? (
+            <span className="bg-yellow-500 text-black text-xs px-3 py-1 rounded">
+              Featured
+            </span>
+          ) : (
+            <button
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
 
-              const confirmDelete = window.confirm(
-                "Are you sure you want to remove this movie?"
-              );
+                const confirmDelete = window.confirm(
+                  "Are you sure you want to remove this movie?"
+                );
 
-              if (confirmDelete) {
-                onRemove(movie.id);
-              }
-            }}
-            className="bg-red-600 text-xs px-3 py-1 rounded hover:bg-red-500"
-          >
-            Remove
-          </button>
+                if (confirmDelete) {
+                  onRemove(movie.id);
+                }
+              }}
+              className="bg-red-600 text-xs px-3 py-1 rounded hover:bg-red-500"
+            >
+              Remove
+            </button>
+          )}
         </div>
       </div>
     </div>
