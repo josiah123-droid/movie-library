@@ -131,15 +131,28 @@ export default function MovieLibraryPage() {
 const [trailer, setTrailer] = useState("");
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-  useEffect(() => {
-    const savedMovies = localStorage.getItem("movie-library-movies");
+useEffect(() => {
+  const savedMovies = localStorage.getItem("movie-library-movies");
 
-    if (savedMovies) {
-      setMovies(JSON.parse(savedMovies));
-    } else {
-      setMovies(defaultMovies);
-    }
-  }, []);
+  if (savedMovies) {
+    const parsedMovies = JSON.parse(savedMovies);
+
+    const normalizedMovies = parsedMovies.map((movie: Partial<Movie>) => ({
+      id: movie.id ?? Date.now(),
+      title: movie.title ?? "Untitled",
+      year: movie.year ?? 2000,
+      genre: movie.genre ?? "Unknown",
+      rating: movie.rating ?? 4,
+      cover: movie.cover ?? "",
+      description: movie.description ?? "No description yet.",
+      trailer: movie.trailer ?? "",
+    }));
+
+    setMovies(normalizedMovies);
+  } else {
+    setMovies(defaultMovies);
+  }
+}, []);
 
   useEffect(() => {
     localStorage.setItem("movie-library-movies", JSON.stringify(movies));
