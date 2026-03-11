@@ -27,133 +27,12 @@ type MovieDraft = {
   trailer: string;
 };
 
-const defaultMovies: Movie[] = [
-  {
-    id: 2,
-    title: "Avatar",
-    year: 2009,
-    genre: "Adventure",
-    rating: 4,
-    cover: "https://image.tmdb.org/t/p/w500/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg",
-    description:
-      "A marine on an alien planet becomes torn between following orders and protecting a new world.",
-    trailer: "https://www.youtube.com/embed/5PSNL1qE6VY",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "The Dark Knight",
-    year: 2008,
-    genre: "Action",
-    rating: 5,
-    cover: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-    description:
-      "Batman faces the Joker, a criminal mastermind who plunges Gotham into chaos.",
-    trailer: "https://www.youtube.com/embed/EXeTwQWrcwY",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Parasite",
-    year: 2019,
-    genre: "Thriller",
-    rating: 4,
-    cover: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
-    description:
-      "A poor family schemes to infiltrate a wealthy household with unexpected consequences.",
-    trailer: "https://www.youtube.com/embed/isOGD_7hNIY",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Avengers: Endgame",
-    year: 2019,
-    genre: "Superhero",
-    rating: 4,
-    cover: "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
-    description:
-      "The Avengers assemble once more to undo the destruction caused by Thanos.",
-    trailer: "https://www.youtube.com/embed/TcMBFSGVi1c",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Interstellar",
-    year: 2014,
-    genre: "Sci-Fi",
-    rating: 5,
-    cover: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-    description:
-      "A team of explorers travel through a wormhole in space to save humanity.",
-    trailer: "https://www.youtube.com/embed/zSWdZVtXT7E",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 7,
-    title: "Gladiator",
-    year: 2000,
-    genre: "Historical",
-    rating: 4,
-    cover: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
-    description:
-      "A Roman general seeks revenge after being betrayed and forced into slavery.",
-    trailer: "https://www.youtube.com/embed/P5ieIbInFpg",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 8,
-    title: "The Matrix",
-    year: 1999,
-    genre: "Sci-Fi",
-    rating: 5,
-    cover: "https://image.tmdb.org/t/p/w500/p96dm7sCMn4VYAStA6siNz30G1r.jpg",
-    description:
-      "A hacker learns reality is a simulation controlled by machines.",
-    trailer: "https://www.youtube.com/embed/vKQi3bBA1y8",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 9,
-    title: "Titanic",
-    year: 1997,
-    genre: "Romance",
-    rating: 4,
-    cover: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
-    description: "A love story unfolds aboard the ill-fated Titanic.",
-    trailer: "https://www.youtube.com/embed/b0KYvGa_nN8",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-  {
-    id: 10,
-    title: "Joker",
-    year: 2019,
-    genre: "Drama",
-    rating: 4,
-    cover: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
-    description:
-      "A struggling comedian descends into madness and becomes the Joker.",
-    trailer: "https://www.youtube.com/embed/mMpsE6MKdmM",
-    isDefault: true,
-    isDraft: false,
-    featured: false,
-  },
-];
+type SearchResult = {
+  id: number;
+  title: string;
+  release_date?: string;
+  poster_path?: string;
+};
 
 export default function MovieLibraryPage() {
   const [search, setSearch] = useState("");
@@ -170,6 +49,10 @@ export default function MovieLibraryPage() {
   const [trailer, setTrailer] = useState("");
 
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+
+  const [tmdbQuery, setTmdbQuery] = useState("");
+  const [tmdbResults, setTmdbResults] = useState<SearchResult[]>([]);
+  const [isSearchingTmdb, setIsSearchingTmdb] = useState(false);
 
   useEffect(() => {
     const savedMovies = localStorage.getItem("movie-library-movies");
@@ -197,7 +80,7 @@ export default function MovieLibraryPage() {
 
       setMovies(normalizedMovies);
     } else {
-      setMovies(defaultMovies);
+      setMovies([]);
     }
   }, []);
 
@@ -354,6 +237,54 @@ export default function MovieLibraryPage() {
     }
   };
 
+  const handleTmdbSearch = async () => {
+    if (!tmdbQuery.trim()) return;
+
+    setIsSearchingTmdb(true);
+    try {
+      const res = await fetch(
+        `/api/tmdb/search?query=${encodeURIComponent(tmdbQuery)}`
+      );
+      const data = await res.json();
+      setTmdbResults(data.results ?? []);
+    } finally {
+      setIsSearchingTmdb(false);
+    }
+  };
+
+ const handleAddFromTmdb = async (tmdbId: number) => {
+  const res = await fetch(`/api/tmdb/movie/${tmdbId}`);
+  const data = await res.json();
+
+  const alreadyExists = movies.some(
+    (movie) =>
+      movie.title.toLowerCase() === data.title.toLowerCase() &&
+      movie.year === data.year
+  );
+
+  if (alreadyExists) return;
+
+  const newMovie: Movie = {
+    id: Date.now(),
+    title: data.title,
+    year: data.year,
+    genre: data.genre,
+    rating: data.rating,
+    cover: data.cover,
+    description: data.description,
+    trailer: data.trailer,
+    isDefault: false,
+    isDraft: false,
+    featured: false,
+  };
+
+  setMovies((prev) => [newMovie, ...prev]);
+
+  // 🔹 Clear search and go back
+  setTmdbResults([]);
+  setTmdbQuery("");
+};
+
   const filteredMovies = movies.filter((movie) => {
     const query = search.toLowerCase();
 
@@ -417,6 +348,85 @@ export default function MovieLibraryPage() {
             Preview Page
           </button>
         </div>
+      </div>
+
+      <div className="mb-8 bg-neutral-900 border border-neutral-800 rounded-2xl p-4">
+        <h2 className="text-xl font-bold mb-4">TMDB Search</h2>
+
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="Search movies from TMDB..."
+            value={tmdbQuery}
+            onChange={(e) => setTmdbQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleTmdbSearch();
+              }
+            }}
+            className="flex-1 p-2 rounded-md border border-neutral-800 bg-neutral-950"
+          />
+
+          <button
+            onClick={handleTmdbSearch}
+            className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-500 transition"
+          >
+            {isSearchingTmdb ? "Searching..." : "Search TMDB"}
+          </button>
+        </div>
+
+        {tmdbResults.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {tmdbResults.map((movie) => {
+              const exists = movies.some(
+                (m) =>
+                  m.title.toLowerCase() === movie.title.toLowerCase() &&
+                  m.year ===
+                    (movie.release_date
+                      ? Number(movie.release_date.slice(0, 4))
+                      : 0)
+              );
+
+              return (
+                <div
+                  key={movie.id}
+                  className="flex items-center gap-3 bg-neutral-950 rounded-xl p-3 border border-neutral-800"
+                >
+                  <img
+                    src={
+                      movie.poster_path
+                        ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+                        : "https://via.placeholder.com/100x150?text=No+Poster"
+                    }
+                    alt={movie.title}
+                    className="w-16 h-24 object-cover rounded-md"
+                  />
+
+                  <div className="flex-1">
+                    <p className="font-semibold">{movie.title}</p>
+                    <p className="text-sm text-neutral-400">
+                      {movie.release_date
+                        ? movie.release_date.slice(0, 4)
+                        : "No year"}
+                    </p>
+                  </div>
+
+                  <button
+                    disabled={exists}
+                    onClick={() => handleAddFromTmdb(movie.id)}
+                    className={`px-3 py-2 rounded-md text-sm ${
+                      exists
+                        ? "bg-neutral-700 text-neutral-400 cursor-not-allowed"
+                        : "bg-green-600 hover:bg-green-500"
+                    }`}
+                  >
+                    {exists ? "Added" : "Add"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {showForm && (
