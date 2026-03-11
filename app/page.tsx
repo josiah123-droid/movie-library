@@ -35,6 +35,7 @@ export default function MovieLibraryPage() {
   const [genre, setGenre] = useState("");
   const [rating, setRating] = useState("4");
   const [cover, setCover] = useState("");
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
     const savedMovies = localStorage.getItem("movie-library-movies");
@@ -84,14 +85,21 @@ export default function MovieLibraryPage() {
     setShowForm(false);
   };
 
-const handleDeleteMovie = (id: number) => {
+  const handleDeleteMovie = (id: number) => {
+    const confirmDelete = confirm("Remove movie permanently?");
 
-  const confirmDelete = confirm("Remove movie permanently?");
+    if (!confirmDelete) return;
 
-  if (!confirmDelete) return;
+    setMovies((prev) => prev.filter((movie) => movie.id !== id));
+  };
 
-  setMovies((prev) => prev.filter((movie) => movie.id !== id));
-};
+  const handleRateMovie = (id: number, newRating: number) => {
+    setMovies((prev) =>
+      prev.map((movie) =>
+        movie.id === id ? { ...movie, rating: newRating } : movie
+      )
+    );
+  };
 
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
@@ -172,37 +180,96 @@ const handleDeleteMovie = (id: number) => {
       )}
 
       <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-        {filteredMovies.map((movie) => (
-          <article
-            key={movie.id}
-            className="flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl"
+  {filteredMovies.map((movie) => (
+    <article
+      key={movie.id}
+      onClick={() => setSelectedMovie(movie)}
+      className="flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
+    >
+      <img
+        src={movie.cover}
+        alt={movie.title}
+        className="h-64 w-full object-cover"
+      />
+
+      <div className="p-4 flex flex-col gap-1">
+        <div className="flex items-start justify-between gap-2">
+          <h2 className="font-semibold leading-tight">{movie.title}</h2>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteMovie(movie.id);
+            }}
+            className="text-red-400 hover:text-red-300 text-sm"
           >
-            <img
-              src={movie.cover}
-              alt={movie.title}
-              className="h-64 w-full object-cover"
-            />
+            ✕
+          </button>
+        </div>
 
-            <div className="p-4 flex flex-col gap-1">
-              <div className="flex items-start justify-between gap-2">
-                <h2 className="font-semibold leading-tight">{movie.title}</h2>
-                <button
-                  onClick={() => handleDeleteMovie(movie.id)}
-                  className="text-red-400 hover:text-red-300 text-sm"
-                >
-                  ✕
-                </button>
-              </div>
+        <p className="text-sm text-neutral-400">
+          {movie.year} • {movie.genre}
+        </p>
 
-              <p className="text-sm text-neutral-400">
-                {movie.year} • {movie.genre}
-              </p>
+        <div onClick={(e) => e.stopPropagation()}>
+          <StarRating
+            rating={movie.rating}
+            onRate={(newRating) => handleRateMovie(movie.id, newRating)}
+          />
+        </div>
+      </div>
+    </article>
+  ))}
+</section>
+{selectedMovie && (
+  <div
+    className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+    onClick={() => setSelectedMovie(null)}
+  >
+    <div
+      className="bg-neutral-900 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl grid md:grid-cols-2"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img
+        src={selectedMovie.cover}
+        alt={selectedMovie.title}
+        className="w-full h-96 md:h-full object-cover"
+      />
 
-              <StarRating rating={movie.rating} />
-            </div>
-          </article>
-        ))}
-      </section>
+      <div className="p-6 flex flex-col justify-between">
+        <div>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <h2 className="text-2xl font-bold">{selectedMovie.title}</h2>
+            <button
+              onClick={() => setSelectedMovie(null)}
+              className="text-gray-400 hover:text-white text-xl"
+            >
+              ✕
+            </button>
+          </div>
+
+          <p className="text-neutral-400 mb-2">
+            {selectedMovie.year} • {selectedMovie.genre}
+          </p>
+
+          <StarRating rating={selectedMovie.rating} />
+
+          <p className="text-sm text-neutral-300 mt-6 leading-6">
+            This is a movie details preview. Later, you can add a real
+            description, cast, trailer, runtime, and TMDB overview here.
+          </p>
+        </div>
+
+        <button
+          onClick={() => setSelectedMovie(null)}
+          className="mt-6 bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </main>
   );
 }
