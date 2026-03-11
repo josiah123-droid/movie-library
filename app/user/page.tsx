@@ -173,15 +173,22 @@ export default function UserPage() {
 
                   <StarRating rating={movie.rating} />
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeMovie(movie.id);
-                    }}
-                    className="bg-red-600 text-xs px-2 py-1 rounded mt-2 hover:bg-red-500"
-                  >
-                    Remove
-                  </button>
+<button
+  onClick={(e) => {
+    e.stopPropagation();
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to remove this movie?"
+    );
+
+    if (confirmDelete) {
+      removeMovie(movie.id);
+    }
+  }}
+  className="bg-red-600 text-xs px-2 py-1 rounded mt-2 hover:bg-red-500"
+>
+  Remove
+</button>
                 </div>
               </div>
             ))}
