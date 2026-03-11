@@ -90,6 +90,22 @@ export default function UserPage() {
     setMovies((prev) => prev.filter((m) => m.id !== id));
   };
 
+  const moveLeft = (index: number) => {
+    if (index === 0) return;
+
+    const updated = [...movies];
+    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+    setMovies(updated);
+  };
+
+  const moveRight = (index: number) => {
+    if (index === movies.length - 1) return;
+
+    const updated = [...movies];
+    [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
+    setMovies(updated);
+  };
+
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-6">🎬 User Movie Search</h1>
@@ -152,7 +168,7 @@ export default function UserPage() {
           <h2 className="text-2xl font-bold mb-4">Library</h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {movies.map((movie) => (
+            {movies.map((movie, index) => (
               <div
                 key={movie.id}
                 onClick={() => setSelectedMovie(movie)}
@@ -173,22 +189,44 @@ export default function UserPage() {
 
                   <StarRating rating={movie.rating} />
 
-<button
-  onClick={(e) => {
-    e.stopPropagation();
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
 
-    const confirmDelete = window.confirm(
-      "Are you sure you want to remove this movie?"
-    );
+                      const confirmDelete = window.confirm(
+                        "Are you sure you want to remove this movie?"
+                      );
 
-    if (confirmDelete) {
-      removeMovie(movie.id);
-    }
-  }}
-  className="bg-red-600 text-xs px-2 py-1 rounded mt-2 hover:bg-red-500"
->
-  Remove
-</button>
+                      if (confirmDelete) {
+                        removeMovie(movie.id);
+                      }
+                    }}
+                    className="bg-red-600 text-xs px-2 py-1 rounded mt-2 hover:bg-red-500"
+                  >
+                    Remove
+                  </button>
+
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        moveLeft(index);
+                      }}
+                      className="bg-blue-600 text-xs px-2 py-1 rounded hover:bg-blue-500"
+                    >
+                      ←
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        moveRight(index);
+                      }}
+                      className="bg-blue-600 text-xs px-2 py-1 rounded hover:bg-blue-500"
+                    >
+                      →
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -199,7 +237,6 @@ export default function UserPage() {
       {selectedMovie && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50">
           <div className="bg-neutral-900 rounded-xl max-w-xl w-full p-6 relative">
-
             <button
               onClick={() => setSelectedMovie(null)}
               className="absolute top-3 right-3 text-white text-xl"
@@ -209,6 +246,7 @@ export default function UserPage() {
 
             <img
               src={selectedMovie.cover}
+              alt={selectedMovie.title}
               className="w-full rounded-lg mb-4"
             />
 
