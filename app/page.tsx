@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Star } from "lucide-react";
+import StarRating from "./components/StarRating";
 
 type Movie = {
   id: number;
@@ -38,9 +39,15 @@ const moviesData: Movie[] = [
 export default function MovieLibraryPage() {
   const [search, setSearch] = useState<string>("");
 
-  const filteredMovies = moviesData.filter((movie) =>
-    movie.title.toLowerCase().includes(search.toLowerCase())
+const filteredMovies = moviesData.filter((movie) => {
+  const query = search.toLowerCase();
+
+  return (
+    movie.title.toLowerCase().includes(query) ||
+    movie.genre.toLowerCase().includes(query) ||
+    movie.year.toString().includes(query)
   );
+});
 
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
@@ -51,7 +58,7 @@ export default function MovieLibraryPage() {
         <div className="flex gap-2 w-full md:w-96">
           <input
             type="text"
-            placeholder="Search movies..."
+            placeholder="Search by title, genre, or year..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 p-2 rounded-md border border-neutral-800 bg-neutral-900"
@@ -76,19 +83,16 @@ export default function MovieLibraryPage() {
               className="h-64 w-full object-cover"
             />
 
-            <div className="p-4 flex flex-col gap-1">
-              <h2 className="font-semibold">{movie.title}</h2>
+<div className="p-4 flex flex-col gap-1">
+  <h2 className="font-semibold">{movie.title}</h2>
 
-              <p className="text-sm text-neutral-400">
-                {movie.year} • {movie.genre}
-              </p>
+  <p className="text-sm text-neutral-400">
+    {movie.year} • {movie.genre}
+  </p>
 
-              <div className="flex gap-1">
-                {Array.from({ length: movie.rating }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-yellow-400" />
-                ))}
-              </div>
-            </div>
+  <StarRating rating={movie.rating} />
+
+</div>
           </article>
         ))}
       </section>
