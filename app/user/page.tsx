@@ -29,6 +29,7 @@ type Movie = {
   trailer: string;
   isDefault: boolean;
   isDraft: boolean;
+  featured: boolean;
 };
 
 type SearchResult = {
@@ -62,7 +63,8 @@ function getYouTubeEmbedUrl(url: string) {
       const parts = parsed.pathname.split("/");
       const embedId = parts[parts.length - 1];
       if (
-        (parsed.pathname.includes("/embed/") || parsed.pathname.includes("/shorts/")) &&
+        (parsed.pathname.includes("/embed/") ||
+          parsed.pathname.includes("/shorts/")) &&
         embedId
       ) {
         return `https://www.youtube.com/embed/${embedId}`;
@@ -208,6 +210,7 @@ export default function UserPage() {
       trailer: data.trailer,
       isDefault: false,
       isDraft: false,
+      featured: false,
     };
 
     setMovies((prev) => [newMovie, ...prev]);
@@ -241,6 +244,9 @@ export default function UserPage() {
     if (!selectedMovie?.trailer) return "";
     return getYouTubeEmbedUrl(selectedMovie.trailer);
   }, [selectedMovie]);
+
+  const featuredMovies = movies.filter((movie) => movie.featured);
+  const regularMovies = movies.filter((movie) => !movie.featured);
 
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
@@ -304,7 +310,24 @@ export default function UserPage() {
         </section>
       )}
 
-      {movies.length > 0 && (
+      {featuredMovies.length > 0 && (
+        <section className="mb-10">
+          <h2 className="text-2xl font-bold mb-4">⭐ Featured Movies</h2>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            {featuredMovies.map((movie) => (
+              <SortableMovieCard
+                key={`featured-${movie.id}`}
+                movie={movie}
+                onOpen={setSelectedMovie}
+                onRemove={removeMovie}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {regularMovies.length > 0 && (
         <section>
           <h2 className="text-2xl font-bold mb-4">Library</h2>
 
@@ -314,11 +337,11 @@ export default function UserPage() {
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={movies.map((movie) => movie.id)}
+              items={regularMovies.map((movie) => movie.id)}
               strategy={rectSortingStrategy}
             >
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {movies.map((movie) => (
+                {regularMovies.map((movie) => (
                   <SortableMovieCard
                     key={movie.id}
                     movie={movie}

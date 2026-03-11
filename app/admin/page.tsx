@@ -14,6 +14,7 @@ type Movie = {
   trailer: string;
   isDefault: boolean;
   isDraft: boolean;
+  featured: boolean;
 };
 
 type MovieDraft = {
@@ -39,6 +40,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/5PSNL1qE6VY",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 3,
@@ -52,6 +54,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/EXeTwQWrcwY",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 4,
@@ -65,6 +68,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/isOGD_7hNIY",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 5,
@@ -78,6 +82,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/TcMBFSGVi1c",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 6,
@@ -91,6 +96,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/zSWdZVtXT7E",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 7,
@@ -104,6 +110,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/P5ieIbInFpg",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 8,
@@ -117,6 +124,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/vKQi3bBA1y8",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 9,
@@ -129,6 +137,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/b0KYvGa_nN8",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
   {
     id: 10,
@@ -142,6 +151,7 @@ const defaultMovies: Movie[] = [
     trailer: "https://www.youtube.com/embed/mMpsE6MKdmM",
     isDefault: true,
     isDraft: false,
+    featured: false,
   },
 ];
 
@@ -187,6 +197,7 @@ export default function MovieLibraryPage() {
           trailer: movie.trailer ?? "",
           isDefault: movie.isDefault ?? false,
           isDraft: movie.isDraft ?? false,
+          featured: movie.featured ?? false,
         })
       );
 
@@ -251,6 +262,10 @@ export default function MovieLibraryPage() {
   const handleAddMovie = () => {
     if (!title.trim()) return;
 
+    const existingMovie = editingMovieId
+      ? movies.find((movie) => movie.id === editingMovieId)
+      : null;
+
     const updatedMovie: Movie = {
       id: editingMovieId ?? Date.now(),
       title: title.trim(),
@@ -261,13 +276,14 @@ export default function MovieLibraryPage() {
         cover.trim() || "https://via.placeholder.com/300x450?text=No+Poster",
       description: description.trim(),
       trailer: trailer.trim(),
-      isDefault: false,
+      isDefault: existingMovie?.isDefault ?? false,
       isDraft:
         !year.trim() ||
         !genre.trim() ||
         !cover.trim() ||
         !description.trim() ||
         !trailer.trim(),
+      featured: existingMovie?.featured ?? false,
     };
 
     if (editingMovieId) {
@@ -345,6 +361,20 @@ export default function MovieLibraryPage() {
     }
   };
 
+  const handleToggleFeatured = (id: number) => {
+    setMovies((prev) =>
+      prev.map((movie) =>
+        movie.id === id ? { ...movie, featured: !movie.featured } : movie
+      )
+    );
+
+    if (selectedMovie?.id === id) {
+      setSelectedMovie((prev) =>
+        prev ? { ...prev, featured: !prev.featured } : prev
+      );
+    }
+  };
+
   const filteredMovies = movies.filter((movie) => {
     const query = search.toLowerCase();
 
@@ -354,24 +384,27 @@ export default function MovieLibraryPage() {
       movie.year.toString().includes(query)
     );
   });
-const previewMovie: Movie = {
-  id: editingMovieId ?? 0,
-  title: title.trim() || "Untitled Movie",
-  year: year ? Number(year) : 0,
-  genre: genre.trim() || "Uncategorized",
-  rating: Number(rating) || 4,
-  cover:
-    cover.trim() || "https://via.placeholder.com/300x450?text=No+Poster",
-  description: description.trim() || "No description yet.",
-  trailer: trailer.trim(),
-  isDefault: false,
-  isDraft:
-    !year.trim() ||
-    !genre.trim() ||
-    !cover.trim() ||
-    !description.trim() ||
-    !trailer.trim(),
-};
+
+  const previewMovie: Movie = {
+    id: editingMovieId ?? 0,
+    title: title.trim() || "Untitled Movie",
+    year: year ? Number(year) : 0,
+    genre: genre.trim() || "Uncategorized",
+    rating: Number(rating) || 4,
+    cover:
+      cover.trim() || "https://via.placeholder.com/300x450?text=No+Poster",
+    description: description.trim() || "No description yet.",
+    trailer: trailer.trim(),
+    isDefault: false,
+    isDraft:
+      !year.trim() ||
+      !genre.trim() ||
+      !cover.trim() ||
+      !description.trim() ||
+      !trailer.trim(),
+    featured: false,
+  };
+
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
@@ -417,12 +450,13 @@ const previewMovie: Movie = {
           >
             Restore Defaults
           </button>
+
           <button
-  onClick={() => window.open("/preview", "_blank")}
-  className="bg-purple-600 px-4 py-2 rounded-md hover:bg-purple-500 transition"
->
-  Preview Page
-</button>
+            onClick={() => window.open("/preview", "_blank")}
+            className="bg-purple-600 px-4 py-2 rounded-md hover:bg-purple-500 transition"
+          >
+            Preview Page
+          </button>
         </div>
       </div>
 
@@ -487,51 +521,52 @@ const previewMovie: Movie = {
             onChange={(e) => setTrailer(e.target.value)}
             className="p-2 rounded-md bg-neutral-950 border border-neutral-800 md:col-span-2"
           />
+
           <div className="md:col-span-2">
-  <p className="text-sm text-neutral-400 mb-3">Preview</p>
+            <p className="text-sm text-neutral-400 mb-3">Preview</p>
 
-  <div className="grid md:grid-cols-2 gap-4 bg-neutral-950 border border-neutral-800 rounded-2xl p-4">
-    <img
-      src={previewMovie.cover}
-      alt={previewMovie.title}
-      className="w-full h-80 object-cover rounded-xl"
-    />
+            <div className="grid md:grid-cols-2 gap-4 bg-neutral-950 border border-neutral-800 rounded-2xl p-4">
+              <img
+                src={previewMovie.cover}
+                alt={previewMovie.title}
+                className="w-full h-80 object-cover rounded-xl"
+              />
 
-    <div className="flex flex-col justify-between">
-      <div>
-        <div className="flex flex-col gap-2 mb-3">
-          <h2 className="text-2xl font-bold">{previewMovie.title}</h2>
+              <div className="flex flex-col justify-between">
+                <div>
+                  <div className="flex flex-col gap-2 mb-3">
+                    <h2 className="text-2xl font-bold">{previewMovie.title}</h2>
 
-          {previewMovie.isDraft && (
-            <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-md w-fit">
-              Draft Preview
-            </span>
-          )}
-        </div>
+                    {previewMovie.isDraft && (
+                      <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-md w-fit">
+                        Draft Preview
+                      </span>
+                    )}
+                  </div>
 
-        <p className="text-neutral-400 mb-3">
-          {previewMovie.year ? previewMovie.year : "No year"} •{" "}
-          {previewMovie.genre}
-        </p>
+                  <p className="text-neutral-400 mb-3">
+                    {previewMovie.year ? previewMovie.year : "No year"} •{" "}
+                    {previewMovie.genre}
+                  </p>
 
-        <StarRating rating={previewMovie.rating} />
+                  <StarRating rating={previewMovie.rating} />
 
-        <p className="text-sm text-neutral-300 mt-4 leading-6">
-          {previewMovie.description}
-        </p>
-      </div>
+                  <p className="text-sm text-neutral-300 mt-4 leading-6">
+                    {previewMovie.description}
+                  </p>
+                </div>
 
-      {previewMovie.trailer && (
-        <iframe
-          className="mt-4 w-full aspect-video rounded-lg"
-          src={previewMovie.trailer}
-          title="Preview Trailer"
-          allowFullScreen
-        ></iframe>
-      )}
-    </div>
-  </div>
-</div>
+                {previewMovie.trailer && (
+                  <iframe
+                    className="mt-4 w-full aspect-video rounded-lg"
+                    src={previewMovie.trailer}
+                    title="Preview Trailer"
+                    allowFullScreen
+                  ></iframe>
+                )}
+              </div>
+            </div>
+          </div>
 
           <button
             onClick={handleAddMovie}
@@ -574,6 +609,11 @@ const previewMovie: Movie = {
                       Draft
                     </span>
                   )}
+                  {movie.featured && (
+                    <span className="text-xs bg-yellow-500 text-black px-2 py-1 rounded-md w-fit mt-1">
+                      Featured
+                    </span>
+                  )}
                 </div>
 
                 <button
@@ -598,15 +638,31 @@ const previewMovie: Movie = {
                 />
               </div>
 
-<button
-  onClick={(e) => {
-    e.stopPropagation();
-    handleEditMovie(movie);
-  }}
-  className="mt-2 text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-md w-fit"
->
-  {movie.isDraft ? "Continue Draft" : "Edit"}
-</button>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditMovie(movie);
+                  }}
+                  className="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-md w-fit"
+                >
+                  {movie.isDraft ? "Continue Draft" : "Edit"}
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFeatured(movie.id);
+                  }}
+                  className={`text-xs px-3 py-1 rounded-md w-fit ${
+                    movie.featured
+                      ? "bg-yellow-500 text-black hover:bg-yellow-400"
+                      : "bg-neutral-700 text-white hover:bg-neutral-600"
+                  }`}
+                >
+                  {movie.featured ? "★ Featured" : "☆ Feature"}
+                </button>
+              </div>
             </div>
           </article>
         ))}
@@ -637,6 +693,11 @@ const previewMovie: Movie = {
                     {selectedMovie.isDraft && (
                       <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-md w-fit mt-2">
                         Draft
+                      </span>
+                    )}
+                    {selectedMovie.featured && (
+                      <span className="text-xs bg-yellow-500 text-black px-2 py-1 rounded-md w-fit mt-2">
+                        Featured
                       </span>
                     )}
                   </div>
@@ -671,12 +732,25 @@ const previewMovie: Movie = {
                 )}
               </div>
 
-<button
-  onClick={() => handleEditMovie(selectedMovie)}
-  className="mt-6 bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
->
-  {selectedMovie.isDraft ? "Continue Draft" : "Edit Movie"}
-</button>
+              <div className="mt-6 flex gap-2 flex-wrap">
+                <button
+                  onClick={() => handleEditMovie(selectedMovie)}
+                  className="bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
+                >
+                  {selectedMovie.isDraft ? "Continue Draft" : "Edit Movie"}
+                </button>
+
+                <button
+                  onClick={() => handleToggleFeatured(selectedMovie.id)}
+                  className={`transition px-4 py-2 rounded-md ${
+                    selectedMovie.featured
+                      ? "bg-yellow-500 text-black hover:bg-yellow-400"
+                      : "bg-neutral-700 text-white hover:bg-neutral-600"
+                  }`}
+                >
+                  {selectedMovie.featured ? "★ Featured" : "☆ Feature"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
