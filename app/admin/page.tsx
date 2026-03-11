@@ -28,18 +28,6 @@ type MovieDraft = {
 
 const defaultMovies: Movie[] = [
   {
-    id: 1,
-    title: "Inception",
-    year: 2010,
-    genre: "Sci-Fi",
-    rating: 5,
-    cover: "https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg",
-    description: "A skilled thief leads a team into dreams to steal secrets.",
-    trailer: "https://www.youtube.com/embed/YoHD9XEInc0",
-    isDefault: true,
-    isDraft: false,
-  },
-  {
     id: 2,
     title: "Avatar",
     year: 2009,
@@ -74,7 +62,7 @@ const defaultMovies: Movie[] = [
     cover: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
     description:
       "A poor family schemes to infiltrate a wealthy household with unexpected consequences.",
-    trailer: "https://www.youtube.com/embed/5xH0HfJHsaY",
+    trailer: "https://www.youtube.com/embed/isOGD_7hNIY",
     isDefault: true,
     isDraft: false,
   },
@@ -113,7 +101,7 @@ const defaultMovies: Movie[] = [
     cover: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
     description:
       "A Roman general seeks revenge after being betrayed and forced into slavery.",
-    trailer: "https://www.youtube.com/embed/owK1qxDselE",
+    trailer: "https://www.youtube.com/embed/P5ieIbInFpg",
     isDefault: true,
     isDraft: false,
   },
@@ -138,7 +126,7 @@ const defaultMovies: Movie[] = [
     rating: 4,
     cover: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
     description: "A love story unfolds aboard the ill-fated Titanic.",
-    trailer: "https://www.youtube.com/embed/kVrqfYjkTdQ",
+    trailer: "https://www.youtube.com/embed/b0KYvGa_nN8",
     isDefault: true,
     isDraft: false,
   },
@@ -151,7 +139,7 @@ const defaultMovies: Movie[] = [
     cover: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
     description:
       "A struggling comedian descends into madness and becomes the Joker.",
-    trailer: "https://www.youtube.com/embed/zAGVQLHvwOY",
+    trailer: "https://www.youtube.com/embed/mMpsE6MKdmM",
     isDefault: true,
     isDraft: false,
   },

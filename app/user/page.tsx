@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import StarRating from "../components/StarRating";
 import {
   DndContext,
@@ -43,6 +43,37 @@ type SortableMovieCardProps = {
   onOpen: (movie: Movie) => void;
   onRemove: (id: number) => void;
 };
+
+function getYouTubeEmbedUrl(url: string) {
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname.includes("youtu.be")) {
+      const id = parsed.pathname.replace("/", "");
+      return id ? `https://www.youtube.com/embed/${id}` : "";
+    }
+
+    if (parsed.hostname.includes("youtube.com")) {
+      const id = parsed.searchParams.get("v");
+      if (id) return `https://www.youtube.com/embed/${id}`;
+
+      const parts = parsed.pathname.split("/");
+      const embedId = parts[parts.length - 1];
+      if (
+        (parsed.pathname.includes("/embed/") || parsed.pathname.includes("/shorts/")) &&
+        embedId
+      ) {
+        return `https://www.youtube.com/embed/${embedId}`;
+      }
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+}
 
 function SortableMovieCard({
   movie,
@@ -206,6 +237,11 @@ export default function UserPage() {
     });
   };
 
+  const trailerEmbedUrl = useMemo(() => {
+    if (!selectedMovie?.trailer) return "";
+    return getYouTubeEmbedUrl(selectedMovie.trailer);
+  }, [selectedMovie]);
+
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-6">🎬 User Movie Search</h1>
@@ -298,7 +334,7 @@ export default function UserPage() {
 
       {selectedMovie && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50">
-          <div className="bg-neutral-900 rounded-xl max-w-xl w-full p-6 relative">
+          <div className="bg-neutral-900 rounded-xl max-w-3xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedMovie(null)}
               className="absolute top-3 right-3 text-white text-xl"
@@ -320,9 +356,35 @@ export default function UserPage() {
               {selectedMovie.year} • {selectedMovie.genre}
             </p>
 
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed mb-6">
               {selectedMovie.description}
             </p>
+
+            {trailerEmbedUrl && (
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Trailer</h3>
+                <div className="aspect-video w-full overflow-hidden rounded-lg">
+                  <iframe
+                    src={trailerEmbedUrl}
+                    title={`${selectedMovie.title} Trailer`}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
+
+            {!trailerEmbedUrl && selectedMovie.trailer && (
+              <a
+                href={selectedMovie.trailer}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-2 text-sm text-purple-400 hover:text-purple-300"
+              >
+                Watch trailer
+              </a>
+            )}
           </div>
         </div>
       )}
