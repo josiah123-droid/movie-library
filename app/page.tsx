@@ -214,22 +214,33 @@ setTrailer("");
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
         <h1 className="text-3xl font-bold">🎬 Movie Library</h1>
 
-        <div className="flex gap-2 w-full md:w-[520px]">
-          <input
-            type="text"
-            placeholder="Search by title, genre, or year..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 p-2 rounded-md border border-neutral-800 bg-neutral-900"
-          />
+<div className="flex gap-2 w-full md:w-[700px]">
+  <input
+    type="text"
+    placeholder="Search by title, genre, or year..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="flex-1 p-2 rounded-md border border-neutral-800 bg-neutral-900"
+  />
 
-          <button
-            onClick={() => setShowForm((prev) => !prev)}
-            className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
-          >
-            {showForm ? "Close" : "+ Add Movie"}
-          </button>
-        </div>
+  <button
+    onClick={() => setShowForm((prev) => !prev)}
+    className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
+  >
+    {showForm ? "Close" : "+ Add Movie"}
+  </button>
+
+  <button
+    onClick={() => {
+      localStorage.removeItem("movie-library-movies");
+      setMovies(defaultMovies);
+      setSelectedMovie(null);
+    }}
+    className="bg-red-600 px-4 py-2 rounded-md hover:bg-red-500 transition"
+  >
+    Reset Library
+  </button>
+</div>
       </div>
 
       {showForm && (
