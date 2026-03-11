@@ -158,7 +158,6 @@ const defaultMovies: Movie[] = [
 export default function MovieLibraryPage() {
   const [search, setSearch] = useState("");
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [deletedDefaultIds, setDeletedDefaultIds] = useState<number[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingMovieId, setEditingMovieId] = useState<number | null>(null);
 
@@ -174,11 +173,6 @@ export default function MovieLibraryPage() {
 
   useEffect(() => {
     const savedMovies = localStorage.getItem("movie-library-movies");
-    const savedDeletedIds = localStorage.getItem("deleted-default-movie-ids");
-
-    if (savedDeletedIds) {
-      setDeletedDefaultIds(JSON.parse(savedDeletedIds));
-    }
 
     if (savedMovies) {
       const parsedMovies = JSON.parse(savedMovies);
@@ -226,13 +220,6 @@ export default function MovieLibraryPage() {
   useEffect(() => {
     localStorage.setItem("movie-library-movies", JSON.stringify(movies));
   }, [movies]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "deleted-default-movie-ids",
-      JSON.stringify(deletedDefaultIds)
-    );
-  }, [deletedDefaultIds]);
 
   useEffect(() => {
     const draft: MovieDraft = {
@@ -325,14 +312,6 @@ export default function MovieLibraryPage() {
   const handleDeleteMovie = (id: number) => {
     const confirmDelete = confirm("Remove movie permanently?");
     if (!confirmDelete) return;
-
-    const movieToDelete = movies.find((movie) => movie.id === id);
-
-    if (movieToDelete?.isDefault) {
-      setDeletedDefaultIds((prev) =>
-        prev.includes(id) ? prev : [...prev, id]
-      );
-    }
 
     setMovies((prev) => prev.filter((movie) => movie.id !== id));
 
@@ -429,26 +408,6 @@ export default function MovieLibraryPage() {
             className="bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
           >
             {showForm ? "Close" : "+ Add Movie"}
-          </button>
-
-          <button
-            onClick={() => {
-              const existingIds = new Set(movies.map((movie) => movie.id));
-
-              const missingDefaultMovies = defaultMovies.filter(
-                (movie) =>
-                  !deletedDefaultIds.includes(movie.id) &&
-                  !existingIds.has(movie.id)
-              );
-
-              const restoredMovies = [...movies, ...missingDefaultMovies];
-
-              setMovies(restoredMovies);
-              setSelectedMovie(null);
-            }}
-            className="bg-red-600 px-4 py-2 rounded-md hover:bg-red-500 transition"
-          >
-            Restore Defaults
           </button>
 
           <button
