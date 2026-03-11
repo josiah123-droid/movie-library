@@ -429,6 +429,12 @@ const previewMovie: Movie = {
           >
             Restore Defaults
           </button>
+          <button
+  onClick={() => window.open("/preview", "_blank")}
+  className="bg-purple-600 px-4 py-2 rounded-md hover:bg-purple-500 transition"
+>
+  Preview Page
+</button>
         </div>
       </div>
 
