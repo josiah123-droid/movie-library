@@ -13,11 +13,26 @@ type Movie = {
 };
 
 const moviesData: Movie[] = [
-  { id: 1, title: "Inception", year: 2010, genre: "Sci-Fi", rating: 5, cover: "https://picsum.photos/200/300?1" },
-  { id: 2, title: "Avatar", year: 2009, genre: "Adventure", rating: 4, cover: "https://picsum.photos/200/300?2" },
-  { id: 3, title: "The Dark Knight", year: 2008, genre: "Action", rating: 5, cover: "https://picsum.photos/200/300?3" },
-  { id: 4, title: "Parasite", year: 2019, genre: "Thriller", rating: 4, cover: "https://picsum.photos/200/300?4" },
-  { id: 5, title: "Avengers: Endgame", year: 2019, genre: "Superhero", rating: 4, cover: "https://picsum.photos/200/300?5" },
+  { id: 1, title: "Inception", year: 2010, genre: "Sci-Fi", rating: 5, cover: "https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg" },
+  { id: 2, title: "Avatar", year: 2009, genre: "Adventure", rating: 4, cover: "https://image.tmdb.org/t/p/w500/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg" },
+  { id: 3, title: "The Dark Knight", year: 2008, genre: "Action", rating: 5, cover:"https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" },
+  { id: 4, title: "Parasite", year: 2019, genre: "Thriller", rating: 4, cover: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg" },
+  { id: 5, title: "Avengers: Endgame", year: 2019, genre: "Superhero", rating: 4, cover: "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg" },
+  { id: 6, title: "Interstellar", year: 2014, genre: "Sci-Fi", rating: 5, cover: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" },
+  { id: 7, title: "Gladiator", year: 2000, genre: "Historical", rating: 4, cover: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg" },
+  { id: 8, title: "The Matrix", year: 1999, genre: "Sci-Fi", rating: 5, cover: "https://image.tmdb.org/t/p/w500/p96dm7sCMn4VYAStA6siNz30G1r.jpg" },
+  { id: 9, title: "Titanic", year: 1997, genre: "Romance", rating: 4, cover: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg" },
+  { id: 10, title: "Joker", year: 2019, genre: "Drama", rating: 4, cover: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" },
+  { id: 11, title: "Spider-Man: No Way Home", year: 2021, genre: "Superhero", rating: 4, cover: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" },
+  { id: 12, title: "Top Gun: Maverick", year: 2022, genre: "Action", rating: 4, cover: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg" },
+  { id: 13, title: "The Godfather", year: 1972, genre: "Crime", rating: 5, cover: "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg" },
+  { id: 14, title: "Fight Club", year: 1999, genre: "Drama", rating: 4, cover: "https://image.tmdb.org/t/p/w500/https://image.tmdb.org/t/p/w1280/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" },
+  { id: 15, title: "Forrest Gump", year: 1994, genre: "Drama", rating: 5, cover: "https://image.tmdb.org/t/p/w500/saHP97rTPS5eLmrLQEcANmKrsFl.jpg" },
+  { id: 16, title: "Mad Max: Fury Road", year: 2015, genre: "Action", rating: 4, cover: "https://image.tmdb.org/t/p/w500/hA2ple9q4qnwxp3hKVNhroipsir.jpg" },
+  { id: 17, title: "Doctor Strange", year: 2016, genre: "Superhero", rating: 4, cover: "https://image.tmdb.org/t/p/w500/xf8PbyQcR5ucXErmZNzdKR0s8ya.jpg" },
+  { id: 18, title: "John Wick", year: 2014, genre: "Action", rating: 4, cover: "https://image.tmdb.org/t/p/w500/wXqWR7dHncNRbxoEGybEy7QTe9h.jpg" },
+  { id: 19, title: "The Batman", year: 2022, genre: "Superhero", rating: 4, cover: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg" },
+  { id: 20, title: "Dune", year: 2021, genre: "Sci-Fi", rating: 4, cover: "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg" }
 ];
 
 export default function MovieLibraryPage() {
