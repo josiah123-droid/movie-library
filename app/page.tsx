@@ -542,17 +542,15 @@ export default function MovieLibraryPage() {
                 />
               </div>
 
-              {!movie.isDefault && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditMovie(movie);
-                  }}
-                  className="mt-2 text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-md w-fit"
-                >
-                  {movie.isDraft ? "Continue Draft" : "Edit"}
-                </button>
-              )}
+<button
+  onClick={(e) => {
+    e.stopPropagation();
+    handleEditMovie(movie);
+  }}
+  className="mt-2 text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded-md w-fit"
+>
+  {movie.isDraft ? "Continue Draft" : "Edit"}
+</button>
             </div>
           </article>
         ))}
@@ -617,14 +615,12 @@ export default function MovieLibraryPage() {
                 )}
               </div>
 
-              {!selectedMovie.isDefault && (
-                <button
-                  onClick={() => handleEditMovie(selectedMovie)}
-                  className="mt-6 bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
-                >
-                  {selectedMovie.isDraft ? "Continue Draft" : "Edit Movie"}
-                </button>
-              )}
+<button
+  onClick={() => handleEditMovie(selectedMovie)}
+  className="mt-6 bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
+>
+  {selectedMovie.isDraft ? "Continue Draft" : "Edit Movie"}
+</button>
             </div>
           </div>
         </div>
