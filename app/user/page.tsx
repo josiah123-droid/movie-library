@@ -2,6 +2,21 @@
 
 import { useEffect, useState } from "react";
 import StarRating from "../components/StarRating";
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type Movie = {
   id: number;
@@ -23,12 +38,101 @@ type SearchResult = {
   poster_path?: string;
 };
 
+type SortableMovieCardProps = {
+  movie: Movie;
+  onOpen: (movie: Movie) => void;
+  onRemove: (id: number) => void;
+};
+
+function SortableMovieCard({
+  movie,
+  onOpen,
+  onRemove,
+}: SortableMovieCardProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: movie.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      onClick={() => onOpen(movie)}
+      className={`flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transition cursor-pointer hover:scale-105 ${
+        isDragging ? "opacity-60 z-10" : ""
+      }`}
+    >
+      <img
+        src={movie.cover}
+        alt={movie.title}
+        className="h-64 w-full object-cover"
+      />
+
+      <div className="p-4 flex flex-col gap-2">
+        <h3 className="font-semibold leading-tight">{movie.title}</h3>
+
+        <p className="text-sm text-neutral-400">
+          {movie.year} • {movie.genre}
+        </p>
+
+        <StarRating rating={movie.rating} />
+
+        <div className="flex gap-2 mt-2">
+          <button
+            {...attributes}
+            {...listeners}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-blue-600 text-xs px-3 py-1 rounded hover:bg-blue-500 cursor-grab active:cursor-grabbing"
+          >
+            Drag
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+
+              const confirmDelete = window.confirm(
+                "Are you sure you want to remove this movie?"
+              );
+
+              if (confirmDelete) {
+                onRemove(movie.id);
+              }
+            }}
+            className="bg-red-600 text-xs px-3 py-1 rounded hover:bg-red-500"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function UserPage() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   useEffect(() => {
     const savedMovies = localStorage.getItem("movie-library-movies");
@@ -88,22 +192,24 @@ export default function UserPage() {
 
   const removeMovie = (id: number) => {
     setMovies((prev) => prev.filter((m) => m.id !== id));
+    if (selectedMovie?.id === id) {
+      setSelectedMovie(null);
+    }
   };
 
-  const moveLeft = (index: number) => {
-    if (index === 0) return;
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-    const updated = [...movies];
-    [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
-    setMovies(updated);
-  };
+    if (!over || active.id === over.id) return;
 
-  const moveRight = (index: number) => {
-    if (index === movies.length - 1) return;
+    setMovies((items) => {
+      const oldIndex = items.findIndex((item) => item.id === active.id);
+      const newIndex = items.findIndex((item) => item.id === over.id);
 
-    const updated = [...movies];
-    [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
-    setMovies(updated);
+      if (oldIndex === -1 || newIndex === -1) return items;
+
+      return arrayMove(items, oldIndex, newIndex);
+    });
   };
 
   return (
@@ -167,70 +273,27 @@ export default function UserPage() {
         <section>
           <h2 className="text-2xl font-bold mb-4">Library</h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {movies.map((movie, index) => (
-              <div
-                key={movie.id}
-                onClick={() => setSelectedMovie(movie)}
-                className="flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition"
-              >
-                <img
-                  src={movie.cover}
-                  alt={movie.title}
-                  className="h-64 w-full object-cover"
-                />
-
-                <div className="p-4 flex flex-col gap-2">
-                  <h3 className="font-semibold leading-tight">{movie.title}</h3>
-
-                  <p className="text-sm text-neutral-400">
-                    {movie.year} • {movie.genre}
-                  </p>
-
-                  <StarRating rating={movie.rating} />
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-
-                      const confirmDelete = window.confirm(
-                        "Are you sure you want to remove this movie?"
-                      );
-
-                      if (confirmDelete) {
-                        removeMovie(movie.id);
-                      }
-                    }}
-                    className="bg-red-600 text-xs px-2 py-1 rounded mt-2 hover:bg-red-500"
-                  >
-                    Remove
-                  </button>
-
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        moveLeft(index);
-                      }}
-                      className="bg-blue-600 text-xs px-2 py-1 rounded hover:bg-blue-500"
-                    >
-                      ←
-                    </button>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        moveRight(index);
-                      }}
-                      className="bg-blue-600 text-xs px-2 py-1 rounded hover:bg-blue-500"
-                    >
-                      →
-                    </button>
-                  </div>
-                </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={movies.map((movie) => movie.id)}
+              strategy={rectSortingStrategy}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                {movies.map((movie) => (
+                  <SortableMovieCard
+                    key={movie.id}
+                    movie={movie}
+                    onOpen={setSelectedMovie}
+                    onRemove={removeMovie}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+            </SortableContext>
+          </DndContext>
         </section>
       )}
 
