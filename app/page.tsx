@@ -10,19 +10,111 @@ type Movie = {
   genre: string;
   rating: number;
   cover: string;
+  description: string;
+  trailer: string;
 };
 
 const defaultMovies: Movie[] = [
-  { id: 1, title: "Inception", year: 2010, genre: "Sci-Fi", rating: 5, cover: "https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg" },
-  { id: 2, title: "Avatar", year: 2009, genre: "Adventure", rating: 4, cover: "https://image.tmdb.org/t/p/w500/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg" },
-  { id: 3, title: "The Dark Knight", year: 2008, genre: "Action", rating: 5, cover: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" },
-  { id: 4, title: "Parasite", year: 2019, genre: "Thriller", rating: 4, cover: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg" },
-  { id: 5, title: "Avengers: Endgame", year: 2019, genre: "Superhero", rating: 4, cover: "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg" },
-  { id: 6, title: "Interstellar", year: 2014, genre: "Sci-Fi", rating: 5, cover: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" },
-  { id: 7, title: "Gladiator", year: 2000, genre: "Historical", rating: 4, cover: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg" },
-  { id: 8, title: "The Matrix", year: 1999, genre: "Sci-Fi", rating: 5, cover: "https://image.tmdb.org/t/p/w500/p96dm7sCMn4VYAStA6siNz30G1r.jpg" },
-  { id: 9, title: "Titanic", year: 1997, genre: "Romance", rating: 4, cover: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg" },
-  { id: 10, title: "Joker", year: 2019, genre: "Drama", rating: 4, cover: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" },
+  {
+    id: 1,
+    title: "Inception",
+    year: 2010,
+    genre: "Sci-Fi",
+    rating: 5,
+    cover: "https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg",
+    description: "A skilled thief leads a team into dreams to steal secrets.",
+    trailer: "https://www.youtube.com/embed/YoHD9XEInc0"
+  },
+  {
+    id: 2,
+    title: "Avatar",
+    year: 2009,
+    genre: "Adventure",
+    rating: 4,
+    cover: "https://image.tmdb.org/t/p/w500/gKY6q7SjCkAU6FqvqWybDYgUKIF.jpg",
+    description: "A marine on an alien planet becomes torn between following orders and protecting a new world.",
+    trailer: "https://www.youtube.com/embed/5PSNL1qE6VY"
+  },
+  {
+    id: 3,
+    title: "The Dark Knight",
+    year: 2008,
+    genre: "Action",
+    rating: 5,
+    cover: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    description: "Batman faces the Joker, a criminal mastermind who plunges Gotham into chaos.",
+    trailer: "https://www.youtube.com/embed/EXeTwQWrcwY"
+  },
+  {
+    id: 4,
+    title: "Parasite",
+    year: 2019,
+    genre: "Thriller",
+    rating: 4,
+    cover: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+    description: "A poor family schemes to infiltrate a wealthy household with unexpected consequences.",
+    trailer: "https://www.youtube.com/embed/5xH0HfJHsaY"
+  },
+  {
+    id: 5,
+    title: "Avengers: Endgame",
+    year: 2019,
+    genre: "Superhero",
+    rating: 4,
+    cover: "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
+    description: "The Avengers assemble once more to undo the destruction caused by Thanos.",
+    trailer: "https://www.youtube.com/embed/TcMBFSGVi1c"
+  },
+  {
+    id: 6,
+    title: "Interstellar",
+    year: 2014,
+    genre: "Sci-Fi",
+    rating: 5,
+    cover: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    description: "A team of explorers travel through a wormhole in space to save humanity.",
+    trailer: "https://www.youtube.com/embed/zSWdZVtXT7E"
+  },
+  {
+    id: 7,
+    title: "Gladiator",
+    year: 2000,
+    genre: "Historical",
+    rating: 4,
+    cover: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
+    description: "A Roman general seeks revenge after being betrayed and forced into slavery.",
+    trailer: "https://www.youtube.com/embed/owK1qxDselE"
+  },
+  {
+    id: 8,
+    title: "The Matrix",
+    year: 1999,
+    genre: "Sci-Fi",
+    rating: 5,
+    cover: "https://image.tmdb.org/t/p/w500/p96dm7sCMn4VYAStA6siNz30G1r.jpg",
+    description: "A hacker learns reality is a simulation controlled by machines.",
+    trailer: "https://www.youtube.com/embed/vKQi3bBA1y8"
+  },
+  {
+    id: 9,
+    title: "Titanic",
+    year: 1997,
+    genre: "Romance",
+    rating: 4,
+    cover: "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
+    description: "A love story unfolds aboard the ill-fated Titanic.",
+    trailer: "https://www.youtube.com/embed/kVrqfYjkTdQ"
+  },
+  {
+    id: 10,
+    title: "Joker",
+    year: 2019,
+    genre: "Drama",
+    rating: 4,
+    cover: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+    description: "A struggling comedian descends into madness and becomes the Joker.",
+    trailer: "https://www.youtube.com/embed/zAGVQLHvwOY"
+  }
 ];
 
 export default function MovieLibraryPage() {
@@ -35,6 +127,8 @@ export default function MovieLibraryPage() {
   const [genre, setGenre] = useState("");
   const [rating, setRating] = useState("4");
   const [cover, setCover] = useState("");
+  const [description, setDescription] = useState("");
+const [trailer, setTrailer] = useState("");
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
@@ -48,9 +142,7 @@ export default function MovieLibraryPage() {
   }, []);
 
   useEffect(() => {
-    if (movies.length > 0) {
-      localStorage.setItem("movie-library-movies", JSON.stringify(movies));
-    }
+    localStorage.setItem("movie-library-movies", JSON.stringify(movies));
   }, [movies]);
 
   const filteredMovies = movies.filter((movie) => {
@@ -66,14 +158,16 @@ export default function MovieLibraryPage() {
   const handleAddMovie = () => {
     if (!title || !year || !genre || !cover) return;
 
-    const newMovie: Movie = {
-      id: Date.now(),
-      title,
-      year: Number(year),
-      genre,
-      rating: Number(rating),
-      cover,
-    };
+const newMovie: Movie = {
+  id: Date.now(),
+  title,
+  year: Number(year),
+  genre,
+  rating: Number(rating),
+  cover,
+  description,
+  trailer
+};
 
     setMovies((prev) => [newMovie, ...prev]);
 
@@ -82,12 +176,13 @@ export default function MovieLibraryPage() {
     setGenre("");
     setRating("4");
     setCover("");
+    setDescription("");
+setTrailer("");
     setShowForm(false);
   };
 
   const handleDeleteMovie = (id: number) => {
     const confirmDelete = confirm("Remove movie permanently?");
-
     if (!confirmDelete) return;
 
     setMovies((prev) => prev.filter((movie) => movie.id !== id));
@@ -169,6 +264,21 @@ export default function MovieLibraryPage() {
             onChange={(e) => setCover(e.target.value)}
             className="p-2 rounded-md bg-neutral-950 border border-neutral-800 md:col-span-2"
           />
+          <input
+  type="text"
+  placeholder="Movie description"
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  className="p-2 rounded-md bg-neutral-950 border border-neutral-800 md:col-span-2"
+/>
+
+<input
+  type="text"
+  placeholder="YouTube trailer embed URL"
+  value={trailer}
+  onChange={(e) => setTrailer(e.target.value)}
+  className="p-2 rounded-md bg-neutral-950 border border-neutral-800 md:col-span-2"
+/>
 
           <button
             onClick={handleAddMovie}
@@ -180,96 +290,105 @@ export default function MovieLibraryPage() {
       )}
 
       <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-  {filteredMovies.map((movie) => (
-    <article
-      key={movie.id}
-      onClick={() => setSelectedMovie(movie)}
-      className="flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
-    >
-      <img
-        src={movie.cover}
-        alt={movie.title}
-        className="h-64 w-full object-cover"
-      />
-
-      <div className="p-4 flex flex-col gap-1">
-        <div className="flex items-start justify-between gap-2">
-          <h2 className="font-semibold leading-tight">{movie.title}</h2>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleDeleteMovie(movie.id);
-            }}
-            className="text-red-400 hover:text-red-300 text-sm"
+        {filteredMovies.map((movie) => (
+          <article
+            key={movie.id}
+            onClick={() => setSelectedMovie(movie)}
+            className="flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer"
           >
-            ✕
-          </button>
-        </div>
+            <img
+              src={movie.cover}
+              alt={movie.title}
+              className="h-64 w-full object-cover"
+            />
 
-        <p className="text-sm text-neutral-400">
-          {movie.year} • {movie.genre}
-        </p>
+            <div className="p-4 flex flex-col gap-1">
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="font-semibold leading-tight">{movie.title}</h2>
 
-        <div onClick={(e) => e.stopPropagation()}>
-          <StarRating
-            rating={movie.rating}
-            onRate={(newRating) => handleRateMovie(movie.id, newRating)}
-          />
-        </div>
-      </div>
-    </article>
-  ))}
-</section>
-{selectedMovie && (
-  <div
-    className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
-    onClick={() => setSelectedMovie(null)}
-  >
-    <div
-      className="bg-neutral-900 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl grid md:grid-cols-2"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <img
-        src={selectedMovie.cover}
-        alt={selectedMovie.title}
-        className="w-full h-96 md:h-full object-cover"
-      />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteMovie(movie.id);
+                  }}
+                  className="text-red-400 hover:text-red-300 text-sm"
+                >
+                  ✕
+                </button>
+              </div>
 
-      <div className="p-6 flex flex-col justify-between">
-        <div>
-          <div className="flex items-start justify-between gap-4 mb-4">
-            <h2 className="text-2xl font-bold">{selectedMovie.title}</h2>
-            <button
-              onClick={() => setSelectedMovie(null)}
-              className="text-gray-400 hover:text-white text-xl"
-            >
-              ✕
-            </button>
-          </div>
+              <p className="text-sm text-neutral-400">
+                {movie.year} • {movie.genre}
+              </p>
 
-          <p className="text-neutral-400 mb-2">
-            {selectedMovie.year} • {selectedMovie.genre}
-          </p>
+              <div onClick={(e) => e.stopPropagation()}>
+                <StarRating
+                  rating={movie.rating}
+                  onRate={(newRating) => handleRateMovie(movie.id, newRating)}
+                />
+              </div>
+            </div>
+          </article>
+        ))}
+      </section>
 
-          <StarRating rating={selectedMovie.rating} />
-
-          <p className="text-sm text-neutral-300 mt-6 leading-6">
-            This is a movie details preview. Later, you can add a real
-            description, cast, trailer, runtime, and TMDB overview here.
-          </p>
-        </div>
-
-        <button
+      {selectedMovie && (
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
           onClick={() => setSelectedMovie(null)}
-          className="mt-6 bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
         >
-          Close
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+          <div
+            className="bg-neutral-900 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl grid md:grid-cols-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedMovie.cover}
+              alt={selectedMovie.title}
+              className="w-full h-96 md:h-full object-cover"
+            />
+
+            <div className="p-6 flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <h2 className="text-2xl font-bold">{selectedMovie.title}</h2>
+                  <button
+                    onClick={() => setSelectedMovie(null)}
+                    className="text-gray-400 hover:text-white text-xl"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <p className="text-neutral-400 mb-2">
+                  {selectedMovie.year} • {selectedMovie.genre}
+                </p>
+
+                <StarRating rating={selectedMovie.rating} />
+
+                <p className="text-sm text-neutral-300 mt-6 leading-6">
+                  {selectedMovie.description}
+                </p>
+
+                {selectedMovie.trailer && (
+                  <iframe
+                    className="mt-6 w-full aspect-video rounded-lg"
+                    src={selectedMovie.trailer}
+                    title={`${selectedMovie.title} Trailer`}
+                    allowFullScreen
+                  ></iframe>
+                )}
+              </div>
+
+              <button
+                onClick={() => setSelectedMovie(null)}
+                className="mt-6 bg-blue-600 hover:bg-blue-500 transition px-4 py-2 rounded-md"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
