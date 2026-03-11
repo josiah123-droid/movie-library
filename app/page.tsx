@@ -84,9 +84,14 @@ export default function MovieLibraryPage() {
     setShowForm(false);
   };
 
-  const handleDeleteMovie = (id: number) => {
-    setMovies((prev) => prev.filter((movie) => movie.id !== id));
-  };
+const handleDeleteMovie = (id: number) => {
+
+  const confirmDelete = confirm("Remove movie permanently?");
+
+  if (!confirmDelete) return;
+
+  setMovies((prev) => prev.filter((movie) => movie.id !== id));
+};
 
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
