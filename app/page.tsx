@@ -285,26 +285,29 @@ export default function MovieLibraryPage() {
             {showForm ? "Close" : "+ Add Movie"}
           </button>
 
-          <button
-            onClick={() => {
-              const userMovies = movies.filter((movie) => !movie.isDefault);
+<button
+  onClick={() => {
+    const userMovies = movies.filter((movie) => !movie.isDefault);
 
-              const restoredDefaultMovies = defaultMovies.filter(
-                (movie) => !deletedDefaultIds.includes(movie.id)
-              );
+    const existingDefaultIds = new Set(
+      movies.filter((movie) => movie.isDefault).map((movie) => movie.id)
+    );
 
-              const restoredMovies = [
-                ...restoredDefaultMovies,
-                ...userMovies,
-              ];
+    const missingDefaultMovies = defaultMovies.filter(
+      (movie) =>
+        !deletedDefaultIds.includes(movie.id) &&
+        !existingDefaultIds.has(movie.id)
+    );
 
-              setMovies(restoredMovies);
-              setSelectedMovie(null);
-            }}
-            className="bg-red-600 px-4 py-2 rounded-md hover:bg-red-500 transition"
-          >
-            Restore Defaults
-          </button>
+    const restoredMovies = [...movies, ...missingDefaultMovies];
+
+    setMovies(restoredMovies);
+    setSelectedMovie(null);
+  }}
+  className="bg-red-600 px-4 py-2 rounded-md hover:bg-red-500 transition"
+>
+  Restore Defaults
+</button>
         </div>
       </div>
 
