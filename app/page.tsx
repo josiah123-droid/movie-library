@@ -366,7 +366,24 @@ export default function MovieLibraryPage() {
       movie.year.toString().includes(query)
     );
   });
-
+const previewMovie: Movie = {
+  id: editingMovieId ?? 0,
+  title: title.trim() || "Untitled Movie",
+  year: year ? Number(year) : 0,
+  genre: genre.trim() || "Uncategorized",
+  rating: Number(rating) || 4,
+  cover:
+    cover.trim() || "https://via.placeholder.com/300x450?text=No+Poster",
+  description: description.trim() || "No description yet.",
+  trailer: trailer.trim(),
+  isDefault: false,
+  isDraft:
+    !year.trim() ||
+    !genre.trim() ||
+    !cover.trim() ||
+    !description.trim() ||
+    !trailer.trim(),
+};
   return (
     <main className="p-6 bg-neutral-950 min-h-screen text-white">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
@@ -476,6 +493,51 @@ export default function MovieLibraryPage() {
             onChange={(e) => setTrailer(e.target.value)}
             className="p-2 rounded-md bg-neutral-950 border border-neutral-800 md:col-span-2"
           />
+          <div className="md:col-span-2">
+  <p className="text-sm text-neutral-400 mb-3">Preview</p>
+
+  <div className="grid md:grid-cols-2 gap-4 bg-neutral-950 border border-neutral-800 rounded-2xl p-4">
+    <img
+      src={previewMovie.cover}
+      alt={previewMovie.title}
+      className="w-full h-80 object-cover rounded-xl"
+    />
+
+    <div className="flex flex-col justify-between">
+      <div>
+        <div className="flex flex-col gap-2 mb-3">
+          <h2 className="text-2xl font-bold">{previewMovie.title}</h2>
+
+          {previewMovie.isDraft && (
+            <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-md w-fit">
+              Draft Preview
+            </span>
+          )}
+        </div>
+
+        <p className="text-neutral-400 mb-3">
+          {previewMovie.year ? previewMovie.year : "No year"} •{" "}
+          {previewMovie.genre}
+        </p>
+
+        <StarRating rating={previewMovie.rating} />
+
+        <p className="text-sm text-neutral-300 mt-4 leading-6">
+          {previewMovie.description}
+        </p>
+      </div>
+
+      {previewMovie.trailer && (
+        <iframe
+          className="mt-4 w-full aspect-video rounded-lg"
+          src={previewMovie.trailer}
+          title="Preview Trailer"
+          allowFullScreen
+        ></iframe>
+      )}
+    </div>
+  </div>
+</div>
 
           <button
             onClick={handleAddMovie}
