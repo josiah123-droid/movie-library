@@ -67,8 +67,10 @@ function SortableMovieCard({
     <div
       ref={setNodeRef}
       style={style}
+      {...attributes}
+      {...listeners}
       onClick={() => onOpen(movie)}
-      className={`flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transition cursor-pointer hover:scale-105 ${
+      className={`flex flex-col bg-neutral-900 rounded-2xl overflow-hidden shadow-lg transition cursor-pointer hover:scale-105 touch-none ${
         isDragging ? "opacity-60 z-10" : ""
       }`}
     >
@@ -89,15 +91,7 @@ function SortableMovieCard({
 
         <div className="flex gap-2 mt-2">
           <button
-            {...attributes}
-            {...listeners}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-blue-600 text-xs px-3 py-1 rounded hover:bg-blue-500 cursor-grab active:cursor-grabbing"
-          >
-            Drag
-          </button>
-
-          <button
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
 
@@ -222,6 +216,11 @@ export default function UserPage() {
           placeholder="Search movies..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
           className="flex-1 p-2 rounded-md border border-neutral-800 bg-neutral-900"
         />
         <button
