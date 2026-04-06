@@ -8,9 +8,13 @@ datasource db {
 }
 
 model Movie {
-  id        String   @id @default(uuid())
-  title     String
-  overview  String?
-  posterUrl String?
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  tmdbId      Int      @unique
+  title       String
+  overview    String?
+  posterPath  String?
+  backdropPath String?
+  releaseDate String?
+  rating      Float?
+  createdAt   DateTime @default(now())
 }
