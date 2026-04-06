@@ -4,70 +4,60 @@ import { useEffect, useState } from "react";
 import StarRating from "../components/StarRating";
 import AddToLibraryButton from "../components/AddToLibraryButton";
 
-type Movie = {
-  id: number;
+type DbMovie = {
+  id: string;
+  tmdbId: number;
   title: string;
-  year: number;
-  genre: string;
+  overview: string;
+  posterPath: string | null;
+  backdropPath: string | null;
+  releaseDate: string;
   rating: number;
-  cover: string;
-  description: string;
-  trailer: string;
-  isDefault: boolean;
-  isDraft: boolean;
-  featured: boolean;
+  createdAt: string;
 };
 
 type SearchResult = {
   id: number;
   title: string;
   release_date?: string;
-  poster_path?: string;
+  poster_path?: string | null;
 };
 
 export default function MovieLibraryPage() {
   const [search, setSearch] = useState("");
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<DbMovie[]>([]);
   const [tmdbQuery, setTmdbQuery] = useState("");
   const [tmdbResults, setTmdbResults] = useState<SearchResult[]>([]);
+  const [loadingLibrary, setLoadingLibrary] = useState(true);
 
   useEffect(() => {
-    async function loadMovies() {
-      try {
-        const res = await fetch("/api/movies", {
-          cache: "no-store",
-        });
-
-        const data = await res.json();
-        console.log("ADMIN API:", data);
-
-        const safe = Array.isArray(data) ? data : data.movies || [];
-
-        const mapped = safe.map((m: any) => ({
-          id: Number(m.tmdbId ?? m.id),
-          title: m.title ?? "",
-          year: m.releaseDate ? Number(String(m.releaseDate).slice(0, 4)) : 0,
-          genre: "N/A",
-          rating: Number(m.rating ?? 0),
-          cover: m.posterPath
-            ? `https://image.tmdb.org/t/p/w500${m.posterPath}`
-            : "/no-image.png",
-          description: m.overview ?? "",
-          trailer: "",
-          isDefault: false,
-          isDraft: false,
-          featured: false,
-        }));
-
-        setMovies(mapped);
-      } catch (err) {
-        console.error("ADMIN LOAD ERROR:", err);
-        setMovies([]);
-      }
-    }
-
     loadMovies();
   }, []);
+
+  async function loadMovies() {
+    try {
+      setLoadingLibrary(true);
+
+      const res = await fetch("/api/movies", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+      console.log("ADMIN API:", data);
+
+      if (Array.isArray(data)) {
+        setMovies(data);
+      } else {
+        setMovies([]);
+      }
+    } catch (err) {
+      console.error("ADMIN LOAD ERROR:", err);
+      setMovies([]);
+    } finally {
+      setLoadingLibrary(false);
+    }
+  }
 
   const filteredMovies = movies.filter((movie) =>
     movie.title.toLowerCase().includes(search.toLowerCase())
@@ -81,7 +71,6 @@ export default function MovieLibraryPage() {
         `/api/tmdb/search?query=${encodeURIComponent(tmdbQuery)}`
       );
       const data = await res.json();
-
       setTmdbResults(Array.isArray(data.results) ? data.results : []);
     } catch (err) {
       console.error("TMDB SEARCH ERROR:", err);
@@ -140,7 +129,9 @@ export default function MovieLibraryPage() {
 
       <h2 className="mb-4 mt-6 text-2xl">Library</h2>
 
-      {filteredMovies.length === 0 ? (
+      {loadingLibrary ? (
+        <p className="text-neutral-400">Loading movies...</p>
+      ) : filteredMovies.length === 0 ? (
         <p className="text-neutral-400">No movies found.</p>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -149,16 +140,24 @@ export default function MovieLibraryPage() {
               key={movie.id}
               className="overflow-hidden rounded-xl bg-neutral-900"
             >
-              <img
-                src={movie.cover}
-                alt={movie.title}
-                className="h-64 w-full object-cover"
-              />
+              {movie.posterPath ? (
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${movie.posterPath}`}
+                  alt={movie.title}
+                  className="h-64 w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-64 w-full items-center justify-center bg-neutral-800 text-sm text-neutral-400">
+                  No Image
+                </div>
+              )}
 
               <div className="p-3">
-                <h3>{movie.title}</h3>
-                <p className="text-sm text-neutral-400">{movie.year || "N/A"}</p>
-                <StarRating rating={movie.rating} />
+                <h3 className="font-semibold">{movie.title}</h3>
+                <p className="text-sm text-neutral-400">
+                  {movie.releaseDate ? movie.releaseDate.slice(0, 4) : "N/A"}
+                </p>
+                <StarRating rating={Number(movie.rating ?? 0)} />
               </div>
             </div>
           ))}
