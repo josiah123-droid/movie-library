@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import StarRating from "../components/StarRating";
 import AddToLibraryButton from "../components/AddToLibraryButton";
+import RemoveFromLibraryButton from "../components/RemoveFromLibraryButton";
 
 type DbMovie = {
   id: string;
@@ -21,6 +22,7 @@ type SearchResult = {
   title: string;
   release_date?: string;
   poster_path?: string | null;
+  vote_average?: number; // ✅ FIXED
 };
 
 export default function MovieLibraryPage() {
@@ -80,7 +82,7 @@ export default function MovieLibraryPage() {
 
   return (
     <main className="min-h-screen bg-neutral-950 p-6 text-white">
-      <h1 className="mb-6 text-3xl font-bold">🎬 Admin Panel</h1>
+      <h1 className="mb-6 text-3xl font-bold">🎬 Movie Library</h1>
 
       <div className="mb-6 flex gap-2">
         <input
@@ -108,7 +110,10 @@ export default function MovieLibraryPage() {
       {tmdbResults.length > 0 && (
         <div className="mb-8 space-y-2">
           {tmdbResults.map((movie) => (
-            <div key={movie.id} className="flex items-center gap-2">
+            <div
+              key={movie.id}
+              className="flex items-center justify-between rounded-lg bg-neutral-900 p-3"
+            >
               <p>{movie.title}</p>
 
               <AddToLibraryButton
@@ -119,7 +124,7 @@ export default function MovieLibraryPage() {
                   poster_path: movie.poster_path ?? null,
                   backdrop_path: null,
                   release_date: movie.release_date ?? "",
-                  vote_average: 0,
+                  vote_average: movie.vote_average ?? 0, // ✅ FIXED
                 }}
               />
             </div>
@@ -154,10 +159,18 @@ export default function MovieLibraryPage() {
 
               <div className="p-3">
                 <h3 className="font-semibold">{movie.title}</h3>
+
                 <p className="text-sm text-neutral-400">
                   {movie.releaseDate ? movie.releaseDate.slice(0, 4) : "N/A"}
                 </p>
-                <StarRating rating={Number(movie.rating ?? 0)} />
+
+                <div className="mt-2">
+                  <StarRating rating={Number(movie.rating ?? 0)} />
+                </div>
+
+                <div className="mt-4">
+                  <RemoveFromLibraryButton id={movie.id} />
+                </div>
               </div>
             </div>
           ))}
