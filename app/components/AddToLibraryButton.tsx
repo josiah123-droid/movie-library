@@ -34,31 +34,25 @@ export default function AddToLibraryButton({
           title: movie.title ?? '',
           overview: movie.overview ?? '',
           posterPath: movie.poster_path ?? '',
+          backdropPath: movie.backdrop_path ?? '',
           releaseDate: movie.release_date ?? '',
-          rating: Number(movie.vote_average) ?? 0,
+          rating: Number(movie.vote_average) || 0,
         }),
       })
 
       const data = await res.json().catch(() => null)
 
-      // ❌ HANDLE SERVER ERROR CLEANLY
       if (!res.ok) {
         console.error('SERVER ERROR:', data)
         alert(data?.error || 'Failed to save movie')
         return
       }
 
-      // ✅ SUCCESS
-      if (data?.success) {
-        setSaved(true)
+      setSaved(true)
 
-        // small delay for UX
-        setTimeout(() => {
-          window.location.reload()
-        }, 300)
-      } else {
-        alert('Failed to save movie')
-      }
+      setTimeout(() => {
+        window.location.reload()
+      }, 300)
     } catch (err) {
       console.error('CLIENT ERROR:', err)
       alert('Something went wrong. Check console.')

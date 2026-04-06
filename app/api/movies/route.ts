@@ -1,24 +1,5 @@
 import { prisma } from '@/lib/prisma'
 
-export async function GET() {
-  try {
-    const movies = await prisma.movie.findMany({
-      orderBy: { id: 'desc' },
-    })
-
-    return Response.json(movies)
-  } catch (error) {
-    console.error('GET ERROR:', error)
-    return Response.json(
-      {
-        error: 'Failed to fetch movies',
-        details: String(error),
-      },
-      { status: 500 }
-    )
-  }
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json()
@@ -34,14 +15,16 @@ export async function POST(req: Request) {
       },
     })
 
-    return Response.json(movie)
+    return new Response(JSON.stringify(movie), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+
   } catch (error) {
     console.error('POST ERROR:', error)
-    return Response.json(
-      {
-        error: 'Insert failed',
-        details: String(error),
-      },
+
+    return new Response(
+      JSON.stringify({ error: 'Insert failed' }),
       { status: 500 }
     )
   }
