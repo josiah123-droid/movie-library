@@ -9,15 +9,19 @@ export async function GET() {
     return Response.json(movies)
   } catch (error) {
     console.error('GET ERROR:', error)
-    return Response.json({ error: 'Failed to fetch movies' }, { status: 500 })
+    return Response.json(
+      {
+        error: 'Failed to fetch movies',
+        details: String(error),
+      },
+      { status: 500 }
+    )
   }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-
-    console.log('BODY:', body) // 👈 DEBUG
 
     const movie = await prisma.movie.create({
       data: {
@@ -26,15 +30,18 @@ export async function POST(req: Request) {
         overview: body.overview ?? '',
         posterPath: body.posterPath ?? '',
         releaseDate: body.releaseDate ?? '',
-        rating: Number(body.rating) ?? 0,
+        rating: Number(body.rating ?? 0),
       },
     })
 
-    return Response.json({ success: true, movie })
+    return Response.json(movie)
   } catch (error) {
-    console.error('POST ERROR:', error) // 👈 IMPORTANT
+    console.error('POST ERROR:', error)
     return Response.json(
-      { success: false, error: 'Insert failed' },
+      {
+        error: 'Insert failed',
+        details: String(error),
+      },
       { status: 500 }
     )
   }
