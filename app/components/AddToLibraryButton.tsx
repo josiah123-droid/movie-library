@@ -65,7 +65,7 @@ export default function AddToLibraryButton({
     <button
       onClick={handleAdd}
       disabled={loading || saved}
-      className="mt-2 rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700 disabled:opacity-50"
+      className="mt-2 rounded bg-amber-500 px-3 py-1 text-black font-semibold hover:bg-amber-400 disabled:opacity-50"
     >
       {loading ? 'Saving...' : saved ? 'Saved' : 'Add to Library'}
     </button>

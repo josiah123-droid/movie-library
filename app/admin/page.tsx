@@ -101,7 +101,7 @@ export default function MovieLibraryPage() {
 
         <button
           onClick={handleTmdbSearch}
-          className="rounded bg-green-600 px-4 text-white"
+          className="rounded bg-amber-500 px-4 text-black font-semibold hover:bg-amber-400"
         >
           Search
         </button>
